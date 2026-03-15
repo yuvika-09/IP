@@ -1,68 +1,101 @@
-import { useState } from "react"
-import API from "../services/api"
-import { useNavigate } from "react-router-dom"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Register(){
+export default function Register() {
 
-const [name,setName] = useState("")
-const [email,setEmail] = useState("")
-const [password,setPassword] = useState("")
+  const navigate = useNavigate();
 
-const navigate = useNavigate()
+  const [user,setUser] = useState({
+    name:"",
+    email:"",
+    password:""
+  });
 
-const handleRegister = async ()=>{
+  const [show,setShow] = useState(false);
 
-try{
+  const handleChange = (e)=>{
+    setUser({...user,[e.target.name]:e.target.value})
+  }
 
-await API.post("/auth/register",{
-name,
-email,
-password
-})
+  const handleRegister = async(e)=>{
+    e.preventDefault();
 
-alert("Registered Successfully")
+    try{
 
-navigate("/")
+      const res = await fetch("http://localhost:5000/api/auth/register",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify(user)
+      });
 
+      const data = await res.json();
+
+      if(res.ok){
+        alert("Registration Successful");
+        navigate("/");   // redirect to login
+      }else{
+        alert(data.message);
+      }
+
+    }catch(err){
+      alert("Server Error");
+    }
+  }
+
+  return (
+
+    <div className="auth-container">
+
+      <form className="card" style={{width:"380px"}} onSubmit={handleRegister}>
+
+        <h2 className="form-title">Create Account</h2>
+
+        <div className="form-group">
+          <label>Name</label>
+          <input
+          name="name"
+          value={user.name}
+          onChange={handleChange}
+          required
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Email</label>
+          <input
+          name="email"
+          type="email"
+          value={user.email}
+          onChange={handleChange}
+          required
+          />
+        </div>
+
+        <div className="form-group input-wrapper">
+          <label>Password</label>
+          <input
+          name="password"
+          type={show ? "text":"password"}
+          value={user.password}
+          onChange={handleChange}
+          required
+          />
+
+          <span
+          className="password-toggle"
+          onClick={()=>setShow(!show)}>
+          {show ? "Hide":"Show"}
+          </span>
+        </div>
+
+        <button className="btn-primary" style={{width:"100%",marginTop:"15px"}}>
+          Register
+        </button>
+
+      </form>
+
+    </div>
+  );
 }
-catch(err){
-
-alert("Registration failed")
-
-}
-
-}
-
-return(
-
-<div className="form-container">
-
-<h2>Register</h2>
-
-<input
-placeholder="Name"
-onChange={(e)=>setName(e.target.value)}
-/>
-
-<input
-placeholder="Email"
-onChange={(e)=>setEmail(e.target.value)}
-/>
-
-<input
-placeholder="Password"
-type="password"
-onChange={(e)=>setPassword(e.target.value)}
-/>
-
-<button onClick={handleRegister}>
-Register
-</button>
-
-</div>
-
-)
-
-}
-
-export default Register

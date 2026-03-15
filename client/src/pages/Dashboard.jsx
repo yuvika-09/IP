@@ -1,41 +1,63 @@
-import TrafficMap from "../components/TrafficMap"
-import AQICard from "../components/AQICard"
-import BusTracker from "../components/BusTracker"
-import EmergencyServices from "../components/EmergencyServices"
-import CityAnnouncements from "../components/CityAnnouncements"
-import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-function Dashboard(){
+export default function Dashboard(){
 
-const navigate = useNavigate()
+const [username,setUsername] = useState("");
+
+useEffect(()=>{
+  const name = localStorage.getItem("username");
+  if(name) setUsername(name);
+},[]);
 
 return(
 
-<div className="dashboard">
+<div className="container">
 
-<h1>Smart City Dashboard</h1>
-
-<div className="cards">
-
-<div className="card" onClick={()=>navigate("/traffic")}>
-<TrafficMap/>
+<div className="navbar">
+<div className="logo">Smart City Dashboard</div>
+<div>Welcome {username}</div>
 </div>
 
-<div className="card" onClick={()=>navigate("/aqi")}>
-<AQICard/>
-</div>
+<h2 className="page-title">City Monitoring System</h2>
+<p className="subtitle">Real-time city insights</p>
 
-<div className="card" onClick={()=>navigate("/transport")}>
-<BusTracker/>
-</div>
+<div className="dashboard-grid">
 
-<div className="card" onClick={()=>navigate("/emergency")}>
-<EmergencyServices/>
+<Link to="/aqi">
+<div className="dashboard-card large">
+<h3>🌫 Air Quality</h3>
+<p>Monitor pollution levels</p>
 </div>
+</Link>
 
-<div className="card" onClick={()=>navigate("/announcements")}>
-<CityAnnouncements/>
+<Link to="/traffic">
+<div className="dashboard-card large">
+<h3>🚦 Traffic</h3>
+<p>Check congestion status</p>
 </div>
+</Link>
+
+<Link to="/transport">
+<div className="dashboard-card large">
+<h3>🚌 Transport</h3>
+<p>Public transport tracking</p>
+</div>
+</Link>
+
+<Link to="/announcements">
+<div className="dashboard-card large">
+<h3>📢 Announcements</h3>
+<p>Latest city updates</p>
+</div>
+</Link>
+
+<Link to="/emergency">
+<div className="dashboard-card large">
+<h3>🚑 Emergency</h3>
+<p>Emergency contact services</p>
+</div>
+</Link>
 
 </div>
 
@@ -44,5 +66,3 @@ return(
 )
 
 }
-
-export default Dashboard

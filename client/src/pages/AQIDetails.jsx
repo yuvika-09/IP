@@ -1,30 +1,46 @@
-function AQIDetails(){
+import { useEffect, useState } from "react";
+
+export default function AQI(){
+
+const [aqi,setAqi] = useState(null);
+
+useEffect(()=>{
+
+fetch("https://api.waqi.info/feed/delhi/?token=demo")
+.then(res=>res.json())
+.then(data=>{
+  setAqi(data.data.aqi)
+})
+
+},[]);
 
 return(
 
-<div style={{padding:"30px"}}>
+<div className="container">
 
-<h1>🌫 Air Quality Details</h1>
+<h2 className="page-title">Air Quality Index</h2>
 
-<p>AQI: 120 (Moderate)</p>
+<div className="dashboard-grid">
 
-<h3>Pollution Levels</h3>
+<div className="dashboard-card large">
+<h3>Current AQI</h3>
+<h1 style={{fontSize:"48px"}}>{aqi ?? "Loading..."}</h1>
+</div>
 
-<ul>
-<li>PM2.5 : 45</li>
-<li>PM10 : 70</li>
-<li>CO : 1.2</li>
-<li>NO2 : 32</li>
-</ul>
+<div className="dashboard-card large">
+<h3>Status</h3>
+<p>{aqi>150?"Unhealthy":"Moderate"}</p>
+</div>
 
-<h3>Health Advice</h3>
+<div className="dashboard-card large">
+<h3>Health Tip</h3>
+<p>Avoid outdoor exercise if AQI is high.</p>
+</div>
 
-<p>Sensitive people should reduce outdoor activities.</p>
+</div>
 
 </div>
 
 )
 
 }
-
-export default AQIDetails
